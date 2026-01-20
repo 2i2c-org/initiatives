@@ -33,6 +33,9 @@ is an experiment to try the following:
 3. (not as important) can the code that maintains [our public roadmap](https://2i2c.org/roadmap/index) be simpler
    and more clearly maintainable if it pulls from a structured github project?
 4. Can we rewrite some of the existing initiatives to have a more external facing focus?
+   For example, compare [this](https://github.com/2i2c-org/infrastructure/issues/5381) (old) to
+   [this](https://github.com/2i2c-org/initiatives/issues/5) new.
+5. Can we have issue templates here that make it easier for folks to create structured content?
 
 ## Timeline
 
