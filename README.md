@@ -49,3 +49,11 @@ and move on.
 2. Let's treat all the projects we are undertaking (user facing & non-user facing) for this VEDA quarter *that
    serve all our communities* as initiatives here. See if that is useful framing for *VEDA*, as they want to
    demonstrate the value they provide to the broader world.
+
+## What is here?
+
+1. This repository - particularly issues + labels
+2. [This board](https://github.com/orgs/2i2c-org/projects/67/settings) primarily as a way to attach additional fields
+   to issues. We may not use the Board UI at all
+3. A `validate.py`, which is a linter for our structured issues. It's incomplete, but the idea would be that GitHub
+   Actions would run this and set up labels correctly
