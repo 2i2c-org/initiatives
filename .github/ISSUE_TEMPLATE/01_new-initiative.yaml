@@ -11,18 +11,12 @@ body:
     value: |
       As a...
 
-  validations:
-    required: false
-
 - type: textarea
   id: proposed-solution
   attributes:
     label: Proposed Solution
     description: |
       How we intend to solve the problem, written in a way that is understandable to the persona facing the problem.
-
-  validations:
-    required: false
 
 - type: textarea
   id: proposed-implementation
@@ -31,18 +25,12 @@ body:
     description: |
       A very broad description of how we propose to technicall implement this solution.
 
-  validations:
-    required: false
-
 - type: textarea
   id: fits
   attributes:
     label: How will this fit in the ecosystem?
     description: |
       How will this proposed solution fit within the upstream ecosystem as well as practices of our current communities?
-
-  validations:
-    required: false
 
 - type: textarea
   id: endorsements
@@ -52,6 +40,3 @@ body:
       List of endorsements from various community members who may find this useful
     value: |
       -
-
-  validations:
-    required: false
