@@ -1,0 +1,57 @@
+name: New Initiative
+description: A new initiative
+body:
+- type: textarea
+  id: problem-statement
+  attributes:
+    label: Problem Statement
+    description: |
+      A specific problem being faced by a specific persona (such as end user, jupyterhub admin, 2i2c engineer, university IT admin, researcher, PI, etc) we care about.
+
+    value: |
+      As a...
+
+  validations:
+    required: false
+
+- type: textarea
+  id: proposed-solution
+  attributes:
+    label: Proposed Solution
+    description: |
+      How we intend to solve the problem, written in a way that is understandable to the persona facing the problem.
+
+  validations:
+    required: false
+
+- type: textarea
+  id: proposed-implementation
+  attributes:
+    label: Proposed Implementation
+    description: |
+      A very broad description of how we propose to technicall implement this solution.
+
+  validations:
+    required: false
+
+- type: textarea
+  id: fits
+  attributes:
+    label: How will this fit in the ecosystem?
+    description: |
+      How will this proposed solution fit within the upstream ecosystem as well as practices of our current communities?
+
+  validations:
+    required: false
+
+- type: textarea
+  id: endorsements
+  attributes:
+    label: Endorsements
+    description: |
+      List of endorsements from various community members who may find this useful
+    value: |
+      -
+
+  validations:
+    required: false
