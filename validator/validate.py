@@ -1,37 +1,28 @@
+from argparse import ArgumentParser
+import os
+import sys
 import nltk
 from typing import Iterable
 from mistletoe import Document
 from mistletoe.markdown_renderer import MarkdownRenderer
 from mistletoe.block_token import Heading
 from mistletoe.token import Token
+from github import Github, Auth
+from yarl import URL
 
 REQUIRED_HEADINGS = {
-    "Level 1":[
+    "Level 1": [
+        {"heading": "Problem Statement", "min_words": 50},
+        {"heading": "Proposed Solution", "min_words": 50, "max_words": 500},
+        {"heading": "Proposed Implementation", "min_words": 50, "max_words": 500},
         {
-            "heading": "Problem Statement",
-            "min_words": 50
-        },
-        {
-            "heading": "Proposed Solution",
-            "min_words": 50,
-            "max_words": 500
-        },
-        {
-            "heading": "Proposed Implementation",
-            "min_words": 50,
-            "max_words": 500
-        },
-        {
-            "heading": "Where will this solution fit?",
+            "heading": "How will this fit in the ecosystem?",
             "min_words": 25,
         },
-        {
-            "heading": "Endorsements",
-            "min_words": 0
-        }
-
+        {"heading": "Endorsements", "min_words": 0},
     ]
 }
+
 
 def validate_segment(heading: str, level: str, content: str) -> bool:
     # Find segment config
@@ -50,17 +41,20 @@ def validate_segment(heading: str, level: str, content: str) -> bool:
 
     min_words = heading_config.get("min_words", 0)
     if word_count < min_words:
-        print(f"Heading {heading} requires at least {min_words} words, found {word_count} words only")
+        print(
+            f"Heading {heading} requires at least {min_words} words, found {word_count} words only"
+        )
         return False
 
     if "max_words" in heading_config:
         max_words = heading_config["max_words"]
         if word_count > max_words:
-            print(f"Heading {heading} requires at most {max_words} words, found {word_count} words")
+            print(
+                f"Heading {heading} requires at most {max_words} words, found {word_count} words"
+            )
             return False
 
     return True
-
 
 
 def render_tokens_md(renderer: MarkdownRenderer, tokens: Iterable[Token]) -> str:
@@ -69,7 +63,8 @@ def render_tokens_md(renderer: MarkdownRenderer, tokens: Iterable[Token]) -> str
 
     Convenience function to convert AST to markdown
     """
-    return ''.join([renderer.render(c) for c in tokens])
+    return "".join([renderer.render(c) for c in tokens])
+
 
 def parse_segments(markdown: str) -> dict[str, list[Token]]:
     """
@@ -110,7 +105,9 @@ def validate(markdown: str) -> bool:
     segments = parse_segments(markdown)
 
     # Make sure that all the level headings are present
-    missing_headers = set(h["heading"] for h in REQUIRED_HEADINGS["Level 1"]) - set(segments.keys())
+    missing_headers = set(h["heading"] for h in REQUIRED_HEADINGS["Level 1"]) - set(
+        segments.keys()
+    )
     if missing_headers:
         print(f"Missing headers: {missing_headers}")
         return False
@@ -125,39 +122,48 @@ def validate(markdown: str) -> bool:
     return True
 
 
-MD = """
-### Problem Statement
-
-As a user on the hub, I want to have someone else get into the exact same kind of server I am on (environment, resource allocation, content pulled, etc) so we can work together with less accidental complexity caused by underlying server differences. Currently to do so, I have to explicitly give them verbal instructions on what options to choose or type in their 'Start Server' page ('Select the JupyterLab instance, and pick the 14.1 GB resource allocation, then click start'), which is error prone. It is particularly error prone when those instructions use features such as 'Unlisted choice' ('Select Other..., and type in this exact image, and avoid spaces') or 'Build your own image'. I want an easier and more succint way to share this that doesn't involve verbal instructions.
-
-### Proposed Solution
-
-As you make selections in your own 'Start Server' page, we create a link that encodes the choices you make in a stable fashion that is persistent over time. You can copy this link and share it with others, that lets them get to the exact same set of options you picked. You can choose to have this link *automatically* start the server too, so whoever you share it with does not necessarily need to read and understand the 'start a server' page either. This also allows you to make complex 'galleries' that can contain clickable links that not only allow for specific content to be checked out (via nbgitpuller), but also specific environments and resource selections to be chosen.
-
-### Proposed Implementation
-
-To do this, we would need to:
-
-1. Have a 'permalink' implementation in jupyterhub-fancy-profiles that allows automatically filling in info based on a link (mostly done)
-2. Changing our Resource Allocation script to provide more stable ids for resources so we can make adjustments we need to without breaking existing links
-3. Add an 'autostart' feature to the permalinks in jupyterhub-fancy-profiles so they can automatically start servers if enabled (in review)
-4. Roll this out to all users with appropriate documentation
-
-### Where will this solution fit?
-
-This solution will
-
-### Endorsements
-
-- This was pithced to Brian Frietag as part of VEDA PI planning and he wants us to drive this as a way to enable MAAP to be useful to end users.
-
-"""
+def validate_issue(github: Github, account: str, repo: str, issue_id: int):
+    issue = github.get_repo(f"{account}/{repo}").get_issue(issue_id)
+    if validate(issue.body):
+        issue.remove_from_labels("content-error")
+    else:
+        issue.add_to_labels("content-error")
 
 
 def main():
     # Download nltk data for tokenization if needed
     nltk.download("punkt_tab", quiet=True)
-    print(validate(MD))
 
-if __name__ == '__main__':
+    argparser = ArgumentParser()
+    argparser.add_argument(
+        "issue", help="Issue to validate (Full URL or id on 2i2c-org/initiatives)"
+    )
+    args = argparser.parse_args()
+
+    if args.issue.isdigit():
+        account = "2i2c-org"
+        repo = "initiatives"
+        issue_id = int(args.issue)
+    else:
+        # Assume it's a full URL
+        issue_url = URL(args.issue)
+        parts = issue_url.path.split("/")
+        if (
+            issue_url.host != "github.com"
+            or len(parts) != 5
+            or parts[3] != "issues"
+            or not parts[4].isdigit()
+        ):
+            print(f"Expected a GitHub issue URL, found {issue_url}", file=sys.stderr)
+            sys.exit(1)
+
+        account = parts[1]
+        repo = parts[2]
+        issue_id = int(parts[4])
+
+    github = Github(auth=Auth.Token(os.environ["GITHUB_TOKEN"]))
+    validate_issue(github, account, repo, issue_id)
+
+
+if __name__ == "__main__":
     main()

@@ -2,9 +2,11 @@ on:
   issues:
     types: [opened, edited, milestoned]
 jobs:
-  printJob:
-    name: Print event
+  validate-issue:
+    name: Validate Issue
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
     - uses: actions/checkout@v6
       with:
@@ -17,8 +19,8 @@ jobs:
       run: |
         pip install -r validator/requirements.txt
 
-    - name: Dump GitHub context
+    - name: Validate Issue
       env:
-        GITHUB_CONTEXT: ${{ toJson(github.event) }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo "$GITHUB_CONTEXT"
+        python3 validator/validate.py ${{ github.event.issue.number }}
