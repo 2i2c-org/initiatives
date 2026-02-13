@@ -12,21 +12,25 @@ from yarl import URL
 
 REQUIRED_HEADINGS = {
     "Level 1": [
-        {"heading": "Problem Statement", "min_words": 50},
-        {"heading": "Proposed Solution", "min_words": 50, "max_words": 500},
-        {"heading": "Proposed Implementation", "min_words": 50, "max_words": 500},
+        {"heading": "Problem Statement", "min_words": 10},
+        {"heading": "Proposed Solution", "min_words": 10, "max_words": 500},
+        {"heading": "Proposed Implementation", "min_words": 10, "max_words": 500},
         {
             "heading": "How will this fit in the ecosystem?",
-            "min_words": 25,
+            "min_words": 10,
         },
         {"heading": "Endorsements", "min_words": 0},
     ]
 }
 
 
-def validate_segment(heading: str, level: str, content: str) -> bool:
+def validate_segment(heading: str, level: str, content: str) -> bool | str:
+    # Allow heading named "Other Information"
+    if heading == "Other Information":
+        return True
     # Find segment config
     heading_config = None
+
     for h in REQUIRED_HEADINGS[level]:
         if h["heading"] == heading:
             heading_config = h
@@ -34,7 +38,7 @@ def validate_segment(heading: str, level: str, content: str) -> bool:
     else:
         # Heading config not found, this shouldn't be here at this level
         print(f"Found heading {heading}, not expected at level {level}")
-        return False
+        return "error:extra-heading"
 
     words = nltk.word_tokenize(content.lower())
     word_count = len(words)
@@ -44,7 +48,7 @@ def validate_segment(heading: str, level: str, content: str) -> bool:
         print(
             f"Heading {heading} requires at least {min_words} words, found {word_count} words only"
         )
-        return False
+        return "error:incomplete-info"
 
     if "max_words" in heading_config:
         max_words = heading_config["max_words"]
@@ -52,7 +56,7 @@ def validate_segment(heading: str, level: str, content: str) -> bool:
             print(
                 f"Heading {heading} requires at most {max_words} words, found {word_count} words"
             )
-            return False
+            return "error:too-much-info"
 
     return True
 
@@ -97,7 +101,7 @@ def parse_segments(markdown: str) -> dict[str, list[Token]]:
         return document_segments
 
 
-def validate(markdown: str) -> bool:
+def validate(markdown: str) -> bool | str:
     """
     Validate that a passed in markdown is a valid level 1
     """
@@ -110,14 +114,15 @@ def validate(markdown: str) -> bool:
     )
     if missing_headers:
         print(f"Missing headers: {missing_headers}")
-        return False
+        return "error:missing-headers"
 
     # Make sure that none of the content is practically empty
     with MarkdownRenderer() as renderer:
         for header, content in segments.items():
             md_content = render_tokens_md(renderer, content).strip()
-            if not validate_segment(header, "Level 1", md_content):
-                return False
+            resp = validate_segment(header, "Level 1", md_content)
+            if resp is not True:
+                return resp
 
     return True
 
@@ -128,13 +133,22 @@ def validate_issue(github: Github, account: str, repo: str, issue_id: int):
     # Only act on open issues
     if issue.state != 'open':
         return
-    if validate(issue.body):
-        print(f"{issue.html_url} is valid")
-        if "content-error" in issue.labels:
-            issue.remove_from_labels("content-error")
+    resp = validate(issue.body)
+    error_labels = [l.name for l in issue.labels if l.name.startswith("error:")]
+    if resp is True:
+        # Remove all error labels
+        for l in error_labels:
+            print(f"Removing label {l} from {issue.html_url}")
+            issue.remove_from_labels(l)
     else:
-        print(f"{issue.url} has content errors")
-        issue.add_to_labels("content-error")
+        # Remove all *other* error: labels
+        for l in error_labels:
+            if l != resp:
+                print(f"Removing label {l} from {issue.html_url}")
+                issue.remove_from_labels(l)
+        issue.add_to_labels(resp)
+        print(f"Adding label {l} to {issue.html_url}")
+
 
 
 def main():
