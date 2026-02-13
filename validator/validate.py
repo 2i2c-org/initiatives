@@ -114,7 +114,7 @@ def validate(markdown: str) -> bool | str:
     )
     if missing_headers:
         print(f"Missing headers: {missing_headers}")
-        return "error:missing-headers"
+        return "error:missing-heading"
 
     # Make sure that none of the content is practically empty
     with MarkdownRenderer() as renderer:

@@ -43,14 +43,31 @@ There is always risk of too much fiddling with a system as a way to procrastinat
 the system, so this should not take more than one week. Let's learn what we can at the one week mark
 and move on.
 
-
 ## What is here?
 
 1. This repository - particularly issues + labels
 2. [This board](https://github.com/orgs/2i2c-org/projects/67/settings) primarily as a way to attach additional fields
    to issues. We may not use the Board UI at all
-3. A `validate.py`, which is a linter for our structured issues. It's incomplete, but the idea would be that GitHub
-   Actions would run this and set up labels correctly
+3. A `validator`, which is a linter for our structured issues.
+
+## Issue Structure
+
+All issues here **must** have the following headings, *and the following headings only*.
+
+1. Problem Statement
+2. Proposed Solution
+3. Proposed Implementation
+4. How will this fit in the ecosystem?
+5. Endorsements
+6. (Optional) Other Information
+
+There is a [new initiative](https://github.com/2i2c-org/initiatives/issues/new?template=01_new-initiative.yaml)
+template that will help you keep to this structure.
+
+We have a GitHub action that will run on each edit to issues, and
+apply error labels (`error:extra-heading`, `error:missing-heading`, `error:incomplete-info` or `error:too-much-info`)
+based on what the error is. This lets us keep consistently high
+quality in our content
 
 ## Data Model
 
