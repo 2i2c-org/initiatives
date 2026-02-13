@@ -43,12 +43,6 @@ There is always risk of too much fiddling with a system as a way to procrastinat
 the system, so this should not take more than one week. Let's learn what we can at the one week mark
 and move on.
 
-## Yuvi's current process
-
-1. We are participating in VEDA PI planning. Can we use that as an experiment to validate our overall structure?
-2. Let's treat all the projects we are undertaking (user facing & non-user facing) for this VEDA quarter *that
-   serve all our communities* as initiatives here. See if that is useful framing for *VEDA*, as they want to
-   demonstrate the value they provide to the broader world.
 
 ## What is here?
 
@@ -73,3 +67,10 @@ An incomplete description of the data model, split between project board fields 
 5. "User visible" indicates if this initiative results in anything that is visible to end users or admins, or if it will
    be internal engineering improvements that strengthen foundations.
 6. "Rough size" indicates a broad idea of how 'big' we think doing the implementation of this initiative is.
+
+## How do I...?
+
+### Record that a community is interested in an initiative?
+
+We use the label `interested:<community-name>` to indicate that a specific community has expressed interest in
+an initiative. If such a label does not exist, please create one (with color `#f6fd60`) and apply it.
