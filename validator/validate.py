@@ -124,9 +124,16 @@ def validate(markdown: str) -> bool:
 
 def validate_issue(github: Github, account: str, repo: str, issue_id: int):
     issue = github.get_repo(f"{account}/{repo}").get_issue(issue_id)
+
+    # Only act on open issues
+    if issue.state != 'open':
+        return
     if validate(issue.body):
-        issue.remove_from_labels("content-error")
+        print(f"{issue.html_url} is valid")
+        if "content-error" in issue.labels:
+            issue.remove_from_labels("content-error")
     else:
+        print(f"{issue.url} has content errors")
         issue.add_to_labels("content-error")
 
 
