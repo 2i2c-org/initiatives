@@ -84,6 +84,11 @@ An incomplete description of the data model, split between project board fields 
 5. "User visible" indicates if this initiative results in anything that is visible to end users or admins, or if it will
    be internal engineering improvements that strengthen foundations.
 6. "Rough size" indicates a broad idea of how 'big' we think doing the implementation of this initiative is.
+7. "Rough Hours Estimate Range" is provided in *some specific cases* as a lower and upper bound 'hours' estimate for use in
+   proposals. This is *risky* to use when done without a more detailed work plan, and should be used rarely. If this number
+   is changed, please leave a comment about why so there is a record - GitHub does not track changes in fields. This value
+   should be estimated for use in talking directly to communities **as is**, without any additional tweaks from business
+   development or grant writers.
 
 ## How do I...?
 
