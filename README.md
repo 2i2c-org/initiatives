@@ -96,3 +96,10 @@ An incomplete description of the data model, split between project board fields 
 
 We use the label `interested:<community-name>` to indicate that a specific community has expressed interest in
 an initiative. If such a label does not exist, please create one (with color `#f6fd60`) and apply it.
+
+### Handle initiatives that require different implementations per cloud provider?
+
+Under very specific circumstances, we have initiatives that will need to be re-implemented for each cloud provider we support. Since
+we want to do our work in service of specific communities, we don't want to block an initiative being completed for a long time as we
+wait for a different community to have a need. So, initiatives that require per-cloud implementations will be split into two
+initiatives, and tracked separately.
