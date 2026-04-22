@@ -1,4 +1,1 @@
-mistletoe
-nltk
-pygithub
-yarl
+gh-issue-validator
