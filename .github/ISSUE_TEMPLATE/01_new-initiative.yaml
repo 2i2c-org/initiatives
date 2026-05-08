@@ -25,7 +25,7 @@ body:
   attributes:
     label: Proposed Implementation
     description: |
-      A very broad description of how we propose to technicall implement this solution.
+      A very broad description of how we propose to technically implement this solution.
 
 - type: textarea
   id: fits
