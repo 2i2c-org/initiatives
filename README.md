@@ -83,12 +83,7 @@ An incomplete description of the data model, split between project board fields 
    contract or via a different process) that indicate we can start work on this initiative.
 5. "User visible" indicates if this initiative results in anything that is visible to end users or admins, or if it will
    be internal engineering improvements that strengthen foundations.
-6. "Rough size" indicates a broad idea of how 'big' we think doing the implementation of this initiative is.
-7. "Rough Hours Estimate Range" is provided in *some specific cases* as a lower and upper bound 'hours' estimate for use in
-   proposals. This is *risky* to use when done without a more detailed work plan, and should be used rarely. If this number
-   is changed, please leave a comment about why so there is a record - GitHub does not track changes in fields. This value
-   should be estimated for use in talking directly to communities **as is**, without any additional tweaks from business
-   development or grant writers.
+6. "T-shirt size" indicates an order of magnitude idea of how much effort we think the implementation of this initiative will require. These are guesses based on limited information and comparison to prior work, and sizes are explained in this README. 
 
 ## How do I...?
 
@@ -96,6 +91,19 @@ An incomplete description of the data model, split between project board fields 
 
 We use the label `interested:<community-name>` to indicate that a specific community has expressed interest in
 an initiative. If such a label does not exist, please create one (with color `#f6fd60`) and apply it.
+
+### Estimate a t-shirt (order of magnitude) size for an initiative?
+
+Before we have a complete design for a new feature, estimation requires a bit of guesswork. We make our best guesses at t-shirt sizes using the following rubric. Rough estimates of hours should always include the project management, product, design and upstream work that goes into a new feature, not only coding and testing time. 
+
+| Size | Hours | Rough Cost | Description | Example link |
+| --- | --- | --- | --- | --- |
+| Extra Small | <50 hrs | $15K | small features and enhancements of existing features; takes 1 engineer 1-2 sprints | [Dask gateway](https://github.com/2i2c-org/initiatives/issues/5) |
+| Small | up to 150 hrs | $35K | many single features are this size; 2-3 months| [nbgitpuller ~ 120hrs](https://github.com/2i2c-org/initiatives/issues/22) or [Canvas authentication ~ 120-180 hrs](https://github.com/2i2c-org/infrastructure/issues/8632) |
+| Medium | up to 300 hrs | $75K | more complex features or adding a feature and managing an upstream release, 3+ months | [JupyterBook MVP](https://github.com/2i2c-org/infrastructure/issues/5045) |
+| Large | up to 600 hrs | $150K | either more than one person or 6+ months | [Storage quotas](https://github.com/2i2c-org/infrastructure/issues/5477) or [Compute usage quotas](https://github.com/2i2c-org/initiatives/issues/23) |
+| Extra Large | $200K | increasingly hard to estimate | more than one person AND 6+ months; is probably a collection of initiatives | The complete 2025-2026 cost reporting suite, for example - that’s actually 3 different initiatives. Use this size to suggest that something will need to be broken down/refined before we could start work or even accurately sell it |
+| Uncertain | ?? | ?? | size may vary based on design or unknowns | We're missing information needed to size this work, or implementation decisions could significantly impact the size |
 
 ### Handle initiatives that require different implementations per cloud provider?
 
